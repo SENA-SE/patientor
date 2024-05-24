@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
-import {BrowserRouter as Router, Route, Link, useParams} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import { Box, Table, Button, TableHead, Typography, TableCell, TableRow, TableBody } from '@mui/material';
 import axios from 'axios';
 
