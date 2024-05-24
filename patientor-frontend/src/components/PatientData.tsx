@@ -1,11 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {Patient, Gender, Entry, Diagnosis} from '../types';
 import { useParams } from "react-router-dom";
 import { Container } from "@mui/material";
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
-import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key } from 'react';
-
 
 interface PatientDataProps {
     patients: Patient[];

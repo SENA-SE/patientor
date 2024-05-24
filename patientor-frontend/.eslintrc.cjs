@@ -20,6 +20,7 @@ module.exports = {
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/restrict-plus-operands": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",
-    "no-case-declarations": "off"
+    "no-case-declarations": "off",
+    "no-unused-variable" : "false"
   },
 }
