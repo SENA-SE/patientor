@@ -9,7 +9,7 @@
     "lint": "eslint --ext .ts .",
     "start": "node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:frontend": "cd ./patientor-frontend && npm run build",
+    "build:frontend": "cd ./patientor-frontend && npm install && npm run build",
     "deploy": "fly deploy"
   },
   "author": "",
