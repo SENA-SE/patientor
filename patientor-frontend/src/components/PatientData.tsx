@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {Patient, Gender, Entry, Diagnosis} from '../types';
 import { useParams } from "react-router-dom";
 import { Container } from "@mui/material";
