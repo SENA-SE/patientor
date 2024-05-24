@@ -1,0 +1,95 @@
+name: Build and Deploy Phonebook App
+on:
+  push:
+    branches:
+      - main    # change to main if needed
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  build_and_deploy:
+    name: Build and deploy
+    runs-on: ubuntu-20.04
+    concurrency: deploy-group    # optional: ensure only one action runs at a time
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+
+      - name: Build frontend 
+        run: npm run build:frontend
+
+      - name: Build Failed
+        uses: rjstone/discord-webhook-notify@v1
+        if: failure()
+        with:
+          text: Build failed
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          severity: error
+
+      - name: Install backend dependencies
+        run: npm install
+
+      - name: Deploy 
+        if: ${{ github.event_name == 'push' && contains(join(toJson(github.event.commits.*.message)), '#skip') == false }}
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Success
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ github.event_name == 'push' && success() }}
+        with:
+          severity: info
+          text: New version deployed
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          
+  # tag_release:
+  #   needs: [deployment_pipeline]
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     - name: Github context
+  #       env:
+  #         GITHUB_CONTEXT: ${{ toJson(github) }}
+  #       run: echo "$GITHUB_CONTEXT"
+        
+  #     - name: Bump version and push tag
+  #       if: ${{ github.event_name == 'push' && contains(join(toJson(github.event.commits.*.message)), '#skip') == false }}
+  #       uses: anothrNick/github-tag-action@1.64.0
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         DEFAULT_BUMP: patch
+
+  # health_check:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Check the deployed service URL
+  #     uses: jtalk/url-health-check-action@v4
+  #     with:
+  #       # Check the following URLs one by one sequentially
+  #       url: https://example.com|http://example.com
+  #       # Follow redirects, or just report success on 3xx status codes
+  #       follow-redirect: false # Optional, defaults to "false"
+  #       # Fail this action after this many failed attempts
+  #       max-attempts: 3 # Optional, defaults to 1
+  #       # Delay between retries
+  #       retry-delay: 5s # Optional, only applicable to max-attempts > 1
+  #       # Retry all errors, including 404. This option might trigger curl upgrade.
+  #       retry-all: false # Optional, defaults to "false"
+  #       # String representation of cookie attached to health check request.
+  #       # Format: `Name=Value`
+  #       cookie: "token=asdf1234" # Optional, default is empty
+  #       # Basic auth login password pair.
+  #       # Format: `login:password`
+  #       basic-auth: "login:password" # Optional, default is empty
