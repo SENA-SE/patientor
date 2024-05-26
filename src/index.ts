@@ -21,3 +21,5 @@ app.use('/api/patients', patientRouter);
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// exercise11.21
